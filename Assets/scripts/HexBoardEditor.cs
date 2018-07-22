@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,9 +23,9 @@ public class HexBoardEditor : MonoBehaviour
 	private void SnapToGrid()
 	{
 		transform.position = new Vector3(
-			GetGridPos().x * gridSizeX,
-			0f,
-			GetGridPos().y * gridSizeY
+			GetGridPos().x * gridSizeX,			
+			GetGridPos().y * gridSizeY,
+			0f
 			);
 	}
 
@@ -33,7 +33,7 @@ public class HexBoardEditor : MonoBehaviour
 	{
 		return new Vector2Int(
 			Mathf.RoundToInt(transform.position.x / gridSizeX),
-			Mathf.RoundToInt(transform.position.z / gridSizeY)
+			Mathf.RoundToInt(transform.position.y / gridSizeY)
 			);
 	}
 
@@ -41,11 +41,11 @@ public class HexBoardEditor : MonoBehaviour
 	{
 		if (Mathf.RoundToInt(transform.position.x / gridSizeX) % 2 == 0)
 		{
-			return transform.position.z;
+			return transform.position.y;
 		}
 		else
 		{
-			return transform.position.z;
+			return transform.position.y;
 		}
 	}
 

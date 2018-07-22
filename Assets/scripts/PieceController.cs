@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,18 +13,15 @@ public class PieceController : MonoBehaviour {
 	List<PieceController> placesToLand = new List<PieceController>();
 	List<PieceController> piecesToJump = new List<PieceController>();
 	static PieceController[] pieces;
-	Transform peg;
-	[SerializeField] Material blue, green;
-	[SerializeField] MeshRenderer pegMesh;
+	[SerializeField] SpriteRenderer frogRender;
+	[SerializeField] Sprite[] frogSprites;
 	// Use this for initialization
 	void Start () {
 		gameOver = false;
 		pieces = FindObjectsOfType<PieceController>();
-		
-		peg = transform.Find("Peg");
 		location = new Vector2Int(
 			Mathf.RoundToInt(transform.position.x * HexBoardEditor.GetGridSize().x),
-			Mathf.RoundToInt(transform.position.z * HexBoardEditor.GetGridSize().y)
+			Mathf.RoundToInt(transform.position.y * HexBoardEditor.GetGridSize().y)
 			);
 		checks = new Vector2Int[] {
 			new Vector2Int (1,1),
@@ -43,14 +40,15 @@ public class PieceController : MonoBehaviour {
 
 	private void Update()
 	{
-		if (peg.gameObject.activeSelf && pieceEmpty)
+		if (frogRender.gameObject.activeSelf && pieceEmpty)
 		{
-			peg.gameObject.SetActive(false);
+			frogRender.gameObject.SetActive(false);
 		}
-		if (!peg.gameObject.activeSelf && !pieceEmpty)
+		if (!frogRender.gameObject.activeSelf && !pieceEmpty)
 		{
-			peg.gameObject.SetActive(true);
-			peg.localPosition = Vector3.zero;
+			frogRender.gameObject.SetActive(true);
+			frogRender.sprite = frogSprites[0];
+			frogRender.transform.localPosition = Vector3.zero;
 		}
 	}
 
@@ -60,8 +58,7 @@ public class PieceController : MonoBehaviour {
 		{
 			if (thisPieceClicked)
 			{
-				peg.localPosition += Vector3.down;
-				pegMesh.material = green;
+				frogRender.sprite = frogSprites[0];
 				thisPieceClicked = false;
 				return;
 			}
@@ -74,8 +71,7 @@ public class PieceController : MonoBehaviour {
 			}
 			if (!thisPieceClicked)
 			{
-				peg.localPosition += Vector3.up;
-				pegMesh.material = blue;
+				frogRender.sprite = frogSprites[1];
 				thisPieceClicked = true;
 				return;
 			}
@@ -98,7 +94,7 @@ public class PieceController : MonoBehaviour {
 				{
 					if (piece.placesToLand[i] == this)
 					{
-						pegMesh.material = green;
+						frogRender.sprite = frogSprites[0];
 						piece.thisPieceClicked = false;
 						piece.pieceEmpty = true;
 						print(piece.piecesToJump[i].pieceEmpty);

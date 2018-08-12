@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class PieceController : MonoBehaviour {
 
 	public bool pieceEmpty, jumpAvalible;
@@ -16,6 +17,7 @@ public class PieceController : MonoBehaviour {
 	[SerializeField] SpriteRenderer frogRender;
 	[SerializeField] Sprite[] frogSprites;
 	// Use this for initialization
+
 	void Start () {
 		gameOver = false;
 		pieces = FindObjectsOfType<PieceController>();
@@ -82,6 +84,11 @@ public class PieceController : MonoBehaviour {
 			CheckForJump();
 		}
 	}
+	public void SpecialChecks()
+	{
+		RecheckAllJumps ();
+		CheckWinLosesConditions ();
+	}
 
 
 	private void CheckForJump()
@@ -100,6 +107,10 @@ public class PieceController : MonoBehaviour {
 						print(piece.piecesToJump[i].pieceEmpty);
 						piece.piecesToJump[i].pieceEmpty = true;
 						pieceEmpty = false;
+						if (SpecialAbilities.special == Special.bigjump) {
+							SpecialBigJump ();
+							SpecialAbilities.special = Special.none;
+						}
 						RecheckAllJumps();
 						CheckWinLosesConditions();
 						return;
@@ -109,7 +120,7 @@ public class PieceController : MonoBehaviour {
 		}		
 	}
 
-	private void CheckWinLosesConditions()
+	public void CheckWinLosesConditions()
 	{
 		int movesLeft = 0;
 		int piecesLeft = 0;
@@ -190,5 +201,28 @@ public class PieceController : MonoBehaviour {
 			GetComponentInParent<HexBoardEditor>().GetGridPos().x + checks[j].x,
 			GetComponentInParent<HexBoardEditor>().GetGridPos().y + checks[j].y
 			);
+	}
+
+	void SpecialBigJump()
+	{
+		jumpAvalible = false;
+		// For all pieces that aren't empty
+		if(!pieceEmpty)
+		{
+			for (int i = 0; i < pieces.Length; i++)
+			{
+				// Go through all 6 sides of a piece
+				for (int j = 0; j < 6; j++)
+				{
+					// If a board exists
+					if (LocalCheck(j) == pieces[i].GetComponent<HexBoardEditor>().GetGridPos())
+					{
+						if (!pieces[i].pieceEmpty) {
+							pieces[i].pieceEmpty = true;
+						}
+					}
+				}
+			}
+		}
 	}
 }

@@ -16,7 +16,16 @@ public class HexClickCheck : MonoBehaviour {
 		if (!PieceController.gameOver)
 		{
 			print("Clicked");
-			controller.OnClickInChild();
+			switch (SpecialAbilities.special) {
+			case Special.waveoff:
+				controller.pieceEmpty = true;
+				controller.SpecialChecks ();
+				SpecialAbilities.special = Special.none;
+				break;
+			default:
+				controller.OnClickInChild ();
+				break;
+			}
 		}
 	}
 }
